@@ -1,0 +1,165 @@
+{
+  "meta": {
+    "ultima_actualizacion_oficial": "2026-03-31",
+    "ultima_corrida_script": "2026-05-28T17:03:44-05:00",
+    "fuente_deuda": "Ministerio de Hacienda · boletín deuda Q1-2026",
+    "nota": "Cifras en pesos colombianos (COP). Series y bases provienen de fuentes oficiales; ver campo 'fuente' por sección."
+  },
+  "deuda": {
+    "total_cop": 1223500000000000,
+    "interna_cop": 870900000000000,
+    "externa_cop": 352600000000000,
+    "fecha_corte": "2026-03-31",
+    "fuente": "Minhacienda GNC bruta Q1-2026"
+  },
+  "tasas_crecimiento_anual": {
+    "deuda_total_cop": 120000000000000,
+    "deuda_interna_cop": 106000000000000,
+    "deuda_externa_cop": 14000000000000,
+    "pib_cop": 100000000000000,
+    "poblacion": 373100,
+    "nota": "Calibradas con incremento observado ago-2022 a Q1-2026 (+419,5 B en 3,7 años)"
+  },
+  "macro": {
+    "pib_cop": 1879416000000000,
+    "poblacion": 53300000,
+    "hogar_promedio": 2.9,
+    "intereses_anuales_cop": 86000000000000,
+    "deuda_pib_pct": 65.1,
+    "tasa_banrep_pct": 11.25,
+    "inflacion_anual_pct": 5.5,
+    "inflacion_proy_2026_pct": 6.3,
+    "bono_10y_pct": 12.0,
+    "deficit_fiscal_2025_pct": 6.3,
+    "deuda_externa_total_usd": 246801000000,
+    "trm_fallback": 3631.57,
+    "trm_fecha_fallback": "28/05/2026"
+  },
+  "calificaciones": {
+    "sp": {
+      "grado": "BB-",
+      "outlook": "Estable · No grado inv."
+    },
+    "moodys": {
+      "grado": "Baa3",
+      "outlook": "Estable · Grado inv. (límite)"
+    },
+    "fitch": {
+      "grado": "BB",
+      "outlook": "Estable · No grado inv."
+    }
+  },
+  "contexto_gobierno": {
+    "deuda_ago_2022_cop": 804000000000000,
+    "deuda_actual_cop": 1223500000000000,
+    "incremento_cop": 419500000000000,
+    "incremento_pct": 52,
+    "periodo": "3,7 años"
+  },
+  "serie_deuda_pib": {
+    "fuente": "Minhacienda/Banrep GNC bruta · anclas verificadas (2020, 2025, 2026 Q1), intermedios estimados — PENDIENTE serie exacta Banrep/IRC",
+    "metrica": "deuda bruta GNC como % del PIB nominal",
+    "datos": [
+      [2001, 41.0],
+      [2002, 47.0],
+      [2003, 47.0],
+      [2004, 46.0],
+      [2005, 44.0],
+      [2006, 43.0],
+      [2007, 36.0],
+      [2008, 36.0],
+      [2009, 38.0],
+      [2010, 38.0],
+      [2011, 35.0],
+      [2012, 34.0],
+      [2013, 36.0],
+      [2014, 40.0],
+      [2015, 45.0],
+      [2016, 46.0],
+      [2017, 47.0],
+      [2018, 50.0],
+      [2019, 50.0],
+      [2020, 65.0],
+      [2021, 64.0],
+      [2022, 60.0],
+      [2023, 56.0],
+      [2024, 58.0],
+      [2025, 64.5],
+      [2026, 65.1]
+    ]
+  },
+  "serie_coca": {
+    "fuente": "UNODC SIMCI · censo anual. Dato 2024 (262.000 ha) confirmado por el Gobierno; informe formal SIMCI 2024 en disputa metodológica.",
+    "metrica": "hectáreas detectadas",
+    "datos": [
+      [2001, 144807],
+      [2002, 102071],
+      [2003, 86000],
+      [2004, 80000],
+      [2005, 86000],
+      [2006, 78000],
+      [2007, 99000],
+      [2008, 81000],
+      [2009, 73000],
+      [2010, 62000],
+      [2011, 64000],
+      [2012, 48000],
+      [2013, 48000],
+      [2014, 69000],
+      [2015, 96000],
+      [2016, 146000],
+      [2017, 171000],
+      [2018, 169000],
+      [2019, 154000],
+      [2020, 143000],
+      [2021, 204000],
+      [2022, 230000],
+      [2023, 253000],
+      [2024, 262000]
+    ]
+  },
+  "gobiernos": [
+    {
+      "name": "PASTRANA",
+      "start": 2001,
+      "end": 2002.6,
+      "tint": "tA"
+    },
+    {
+      "name": "URIBE I",
+      "start": 2002.6,
+      "end": 2006.6,
+      "tint": "tB"
+    },
+    {
+      "name": "URIBE II",
+      "start": 2006.6,
+      "end": 2010.6,
+      "tint": "tA"
+    },
+    {
+      "name": "SANTOS I",
+      "start": 2010.6,
+      "end": 2014.6,
+      "tint": "tB"
+    },
+    {
+      "name": "SANTOS II",
+      "start": 2014.6,
+      "end": 2018.6,
+      "tint": "tA"
+    },
+    {
+      "name": "DUQUE",
+      "start": 2018.6,
+      "end": 2022.6,
+      "tint": "tB"
+    },
+    {
+      "name": "PETRO",
+      "start": 2022.6,
+      "end": 2027,
+      "tint": "tP"
+    }
+  ]
+}

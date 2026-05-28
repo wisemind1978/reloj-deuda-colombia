@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reloj de la Deuda Nacional de Colombia · Proyección en Vivo</title>
+<meta name="description" content="Reloj público de la deuda del Gobierno Nacional Central de Colombia. Proyección al segundo basada en datos oficiales de Minhacienda, Banrep y DANE.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=JetBrains+Mono:wght@400;500;700&family=Manrope:wght@300;400;500;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --bg-elev: #141414;
+    --bg-elev-2: #1c1c1c;
+    --border: #2a2a2a;
+    --border-strong: #3a3a3a;
+    --col-yellow: #FCD116;
+    --col-blue: #003893;
+    --col-red: #CE1126;
+    --text: #f5f5f5;
+    --text-dim: #9a9a9a;
+    --text-faint: #5a5a5a;
+    --accent-red: #ef4444;
+    --accent-green: #10b981;
+    --accent-amber: #f59e0b;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Manrope', sans-serif;
+    font-weight: 400;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% -20%, rgba(252, 209, 22, 0.08), transparent 70%),
+      radial-gradient(ellipse 60% 40% at 80% 100%, rgba(206, 17, 38, 0.05), transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.012) 2px, rgba(255,255,255,0.012) 3px);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .wrap {
+    position: relative;
+    z-index: 2;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 16px 64px;
+  }
+
+  /* HEADER */
+  .flag-bar {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    height: 6px;
+    margin-bottom: 24px;
+  }
+  .flag-bar div:nth-child(1) { background: var(--col-yellow); }
+  .flag-bar div:nth-child(2) { background: var(--col-blue); }
+  .flag-bar div:nth-child(3) { background: var(--col-red); }
+
+  header {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 8px 0 24px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .live-dot {
+    width: 8px; height: 8px;
+    background: var(--accent-red);
+    border-radius: 50%;
+    animation: pulse 1.4s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(239,68,68,0.7); }
+    50% { opacity: 0.6; box-shadow: 0 0 0 6px rgba(239,68,68,0); }
+  }
+
+  h1 {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: clamp(28px, 6vw, 56px);
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+  }
+  h1 .accent { color: var(--col-yellow); }
+
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-top: 4px;
+  }
+  .meta strong { color: var(--text); font-weight: 500; }
+
+  .header-main {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+  .header-text { flex: 1; min-width: 0; }
+  .stamp {
+    width: clamp(96px, 14vw, 160px);
+    height: auto;
+    flex-shrink: 0;
+    transform: rotate(-2.5deg);
+    filter: drop-shadow(0 4px 12px rgba(0,0,0,0.55));
+  }
+  @media (max-width: 520px) {
+    .stamp { width: 78px; }
+  }
+
+  /* HERO */
+  .hero {
+    margin: 32px 0;
+    padding: 32px 24px;
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--col-yellow);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: 'DEUDA';
+    position: absolute;
+    right: -10px;
+    top: -30px;
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 220px;
+    color: rgba(252,209,22,0.025);
+    line-height: 1;
+    pointer-events: none;
+  }
+  .hero-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 12px;
+  }
+  .hero-big {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: clamp(22px, 5.8vw, 68px);
+    color: var(--col-yellow);
+    line-height: 1.05;
+    letter-spacing: -0.04em;
+    font-variant-numeric: tabular-nums;
+    display: inline-block;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    max-width: 100%;
+    white-space: nowrap;
+  }
+  @media (max-width: 380px) {
+    .hero-big { white-space: normal; }
+  }
+  .hero-big-unit {
+    font-family: 'Manrope', sans-serif;
+    font-size: clamp(11px, 1.8vw, 16px);
+    font-weight: 500;
+    color: var(--text-dim);
+    margin-left: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    display: inline-block;
+    vertical-align: middle;
+  }
+  .hero-exact {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: clamp(11px, 1.4vw, 13px);
+    font-weight: 500;
+    color: var(--text-faint);
+    margin-top: 12px;
+    letter-spacing: 0.04em;
+    font-variant-numeric: tabular-nums;
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+  .hero-exact strong {
+    color: var(--text-dim);
+    font-weight: 500;
+  }
+  .hero-rate {
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px 32px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--text-dim);
+    border-top: 1px dashed var(--border);
+    padding-top: 16px;
+  }
+  .hero-rate span.rate-num { color: var(--accent-red); font-weight: 500; }
+
+  /* GRID */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+
+  .card {
+    background: var(--bg-elev);
+    padding: 20px;
+    position: relative;
+    transition: background 0.2s;
+  }
+  .card:hover { background: var(--bg-elev-2); }
+
+  .card-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+  }
+  .card-label .badge {
+    font-size: 9px;
+    padding: 2px 6px;
+    border: 1px solid var(--border-strong);
+    color: var(--text-faint);
+    letter-spacing: 0.1em;
+  }
+  .card-label .badge.alert {
+    color: var(--accent-red);
+    border-color: var(--accent-red);
+  }
+  .card-label .badge.good {
+    color: var(--accent-green);
+    border-color: var(--accent-green);
+  }
+
+  .card-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: clamp(17px, 2.2vw, 22px);
+    color: var(--text);
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    font-variant-numeric: tabular-nums;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .card-value.large {
+    font-size: clamp(19px, 2.6vw, 26px);
+  }
+  .card-value.yellow { color: var(--col-yellow); }
+  .card-value.red { color: var(--accent-red); }
+  .card-value.green { color: var(--accent-green); }
+
+  .card-unit {
+    font-family: 'Manrope', sans-serif;
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--text-dim);
+    margin-left: 4px;
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+  }
+
+  .card-sub {
+    margin-top: 8px;
+    font-family: 'Manrope', sans-serif;
+    font-size: 12px;
+    color: var(--text-faint);
+    line-height: 1.4;
+  }
+
+  /* SECTION */
+  .section-title {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin: 40px 0 16px;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-title::before {
+    content: '';
+    width: 24px;
+    height: 2px;
+    background: var(--col-yellow);
+  }
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* COMPOSITION BAR */
+  .composition {
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+  .comp-bar {
+    display: flex;
+    height: 36px;
+    margin: 12px 0;
+    border-radius: 2px;
+    overflow: hidden;
+    border: 1px solid var(--border-strong);
+  }
+  .comp-segment {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: #000;
+    transition: width 0.5s;
+  }
+  .comp-interna { background: var(--col-yellow); }
+  .comp-externa { background: var(--col-blue); color: var(--text); }
+
+  .comp-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+  .comp-legend-item { display: flex; align-items: center; gap: 6px; }
+  .comp-dot { width: 10px; height: 10px; border-radius: 1px; }
+
+  /* RATING */
+  .rating {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+  .rating-item {
+    background: var(--bg-elev);
+    padding: 16px;
+    text-align: center;
+  }
+  .rating-agency {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .rating-grade {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 24px;
+    color: var(--accent-amber);
+    letter-spacing: 0.05em;
+  }
+  .rating-outlook {
+    font-family: 'Manrope', sans-serif;
+    font-size: 10px;
+    color: var(--text-faint);
+    margin-top: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  /* FOOTER */
+  footer {
+    margin-top: 48px;
+    padding: 24px 0;
+    border-top: 1px solid var(--border);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-faint);
+    line-height: 1.7;
+  }
+  footer h4 {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-bottom: 8px;
+  }
+  footer a { color: var(--col-yellow); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+  .disclaimer {
+    margin-top: 16px;
+    padding: 12px;
+    background: var(--bg-elev);
+    border-left: 2px solid var(--accent-amber);
+    font-size: 10px;
+    line-height: 1.5;
+    color: var(--text-dim);
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 720px) {
+    .hero { padding: 24px 16px; }
+    .hero::before { font-size: 110px; top: -10px; }
+    .grid { grid-template-columns: 1fr; }
+    .rating { grid-template-columns: 1fr; }
+    .meta { gap: 12px; font-size: 11px; }
+    .card-value { font-size: 18px; }
+    .card-value.large { font-size: 20px; }
+    h1 { font-size: clamp(24px, 7vw, 36px); }
+    .hero-big-unit { display: block; margin-left: 0; margin-top: 6px; }
+  }
+  @media (max-width: 380px) {
+    .card { padding: 16px; }
+  }
+
+  /* CHART · CULTIVOS DE COCA */
+  .chart-card {
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    padding: 24px;
+    position: relative;
+  }
+  .chart-header { margin-bottom: 20px; }
+  .chart-title {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 16px;
+    letter-spacing: 0.06em;
+    color: var(--text);
+    text-transform: uppercase;
+    line-height: 1.2;
+  }
+  .chart-sub {
+    font-family: 'Manrope', sans-serif;
+    font-size: 12px;
+    color: var(--text-faint);
+    margin-top: 6px;
+    line-height: 1.4;
+  }
+  .chart-svg-wrap {
+    position: relative;
+    width: 100%;
+  }
+  .chart-svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    overflow: visible;
+  }
+  .chart-svg .gov-band-label {
+    font-family: 'Manrope', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    fill: var(--text-dim);
+  }
+  .chart-svg .axis-tick {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    fill: var(--text-faint);
+    letter-spacing: 0.05em;
+  }
+  .chart-svg .data-line {
+    fill: none;
+    stroke: var(--col-yellow);
+    stroke-width: 2.5;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+  }
+  .chart-svg .data-point {
+    fill: var(--bg);
+    stroke: var(--col-yellow);
+    stroke-width: 2;
+    cursor: pointer;
+    transition: fill 0.15s, stroke-width 0.15s;
+  }
+  .chart-svg .data-point:hover {
+    fill: var(--col-yellow);
+    stroke-width: 3;
+  }
+  /* Variante chart de deuda — línea roja */
+  .chart-svg.chart-deuda .data-line {
+    stroke: var(--accent-red);
+  }
+  .chart-svg.chart-deuda .data-point { stroke: var(--accent-red); }
+  .chart-svg.chart-deuda .data-point:hover { fill: var(--accent-red); }
+  .chart-svg.chart-deuda .peak-label { fill: var(--accent-red); }
+  .chart-svg .grid-line {
+    stroke: var(--border);
+    stroke-width: 1;
+    stroke-dasharray: 2 4;
+    opacity: 0.6;
+  }
+  .chart-svg .record-line {
+    stroke: var(--accent-red);
+    stroke-width: 1;
+    stroke-dasharray: 4 4;
+    opacity: 0.55;
+  }
+  .chart-svg .record-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    fill: var(--accent-red);
+    font-weight: 700;
+    letter-spacing: 0.15em;
+  }
+  .chart-svg .peak-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    fill: var(--col-yellow);
+    font-weight: 700;
+  }
+  .chart-svg .gov-divider {
+    stroke: rgba(255,255,255,0.08);
+    stroke-width: 1;
+  }
+  .chart-tooltip {
+    position: absolute;
+    background: var(--bg-elev-2);
+    border: 1px solid var(--col-yellow);
+    padding: 10px 14px;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s;
+    z-index: 10;
+    white-space: nowrap;
+    transform: translate(-50%, -100%);
+    margin-top: -12px;
+  }
+  .chart-tooltip.visible { opacity: 1; }
+  .chart-tooltip .tt-year {
+    color: var(--text-dim);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+  .chart-tooltip .tt-value {
+    color: var(--col-yellow);
+    font-weight: 700;
+    font-size: 16px;
+    margin-top: 4px;
+    letter-spacing: -0.02em;
+  }
+  .chart-tooltip .tt-pres {
+    color: var(--text-faint);
+    font-size: 10px;
+    margin-top: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .chart-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 28px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px dashed var(--border);
+  }
+  .chart-legend strong { color: var(--col-yellow); font-weight: 500; }
+  .chart-legend .alert-text { color: var(--accent-red); font-weight: 500; }
+  @media (max-width: 720px) {
+    .chart-card { padding: 16px; }
+    .chart-svg-wrap { overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch; }
+    .chart-svg { min-width: 720px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="flag-bar"><div></div><div></div><div></div></div>
+
+  <header>
+    <div class="header-main">
+      <div class="header-text">
+        <div class="eyebrow">
+          <span class="live-dot"></span>
+          <span>PROYECCIÓN AL SEGUNDO · BASE Q1-2026</span>
+        </div>
+        <h1>RELOJ DE LA DEUDA<br><span class="accent">NACIONAL DE COLOMBIA</span></h1>
+        <div class="meta">
+          <span>FECHA · <strong id="fecha"></strong></span>
+          <span>HORA · <strong id="hora"></strong></span>
+          <span>ÚLT. DATO OFICIAL · <strong id="baseFecha">31 MAR 2026</strong> · MINHACIENDA</span>
+        </div>
+      </div>
+      <img class="stamp" src="assets/estampilla-colombia.png" alt="Estampilla ilustrada de Colombia · café, paisaje andino y ave nativa">
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-label">DEUDA BRUTA DEL GOBIERNO NACIONAL CENTRAL</div>
+    <div>
+      <span class="hero-big" id="deudaBig">$1.223.500.000.000.000</span><span class="hero-big-unit">PESOS COLOMBIANOS · COP</span>
+    </div>
+    <div class="hero-exact">
+      Equivale a · <strong id="deudaExacta">1.223,5 billones</strong> de pesos · ≈ USD <strong id="deudaUSD">335.755</strong> millones
+    </div>
+    <div class="hero-rate">
+      <span>+<span class="rate-num" id="rateSeg">3.802.030</span> COP / SEGUNDO</span>
+      <span>+<span class="rate-num" id="rateMin">228.121.800</span> COP / MINUTO</span>
+      <span>+$<span class="rate-num" id="rateDia">328.541</span> MILLONES / DÍA</span>
+    </div>
+  </div>
+
+  <!-- COMPOSICIÓN -->
+  <div class="section-title">Composición de la deuda</div>
+  <div class="composition">
+    <div class="card-label">
+      <span>INTERNA VS EXTERNA</span>
+      <span class="badge alert" id="compRatio">71/29</span>
+    </div>
+    <div class="comp-bar">
+      <div class="comp-segment comp-interna" style="width:71.2%">71,2%</div>
+      <div class="comp-segment comp-externa" style="width:28.8%">28,8%</div>
+    </div>
+    <div class="comp-legend">
+      <div class="comp-legend-item"><span class="comp-dot" style="background:var(--col-yellow)"></span>INTERNA · $<span id="deudaInterna">870.900.000</span> M COP (TES y otros)</div>
+      <div class="comp-legend-item"><span class="comp-dot" style="background:var(--col-blue)"></span>EXTERNA · $<span id="deudaExterna">352.600.000</span> M COP (USD <span id="deudaExternaUSD">96.747</span> millones)</div>
+    </div>
+  </div>
+
+  <!-- INDICADORES PRINCIPALES -->
+  <div class="grid">
+    <div class="card">
+      <div class="card-label"><span>DEUDA / PIB</span><span class="badge alert">CRÍTICO</span></div>
+      <div class="card-value large red" id="deudaPIB">65,1%</div>
+      <div class="card-sub">Récord del siglo XXI excluyendo pandemia (pico 2020: 65%)</div>
+    </div>
+
+    <div class="card">
+      <div class="card-label"><span>DEUDA POR COLOMBIANO</span></div>
+      <div class="card-value large yellow" id="deudaPerCapita">$22.955.000</div>
+      <div class="card-sub">Cada habitante (incluido recién nacido)</div>
+    </div>
+
+    <div class="card">
+      <div class="card-label"><span>DEUDA POR FAMILIA</span></div>
+      <div class="card-value large yellow" id="deudaPorFamilia">$66.570.000</div>
+      <div class="card-sub">Hogar promedio: 2,9 personas (DANE 2025)</div>
+    </div>
+
+    <div class="card">
+      <div class="card-label"><span>PIB NOMINAL 2026</span></div>
+      <div class="card-value large" id="pib">$1.879.416.000</div>
+      <div class="card-sub">En M COP · implícito por relación deuda/PIB</div>
+    </div>
+
+    <div class="card">
+      <div class="card-label"><span>POBLACIÓN COLOMBIA</span></div>
+      <div class="card-value large" id="poblacion">53.300.000</div>
+      <div class="card-sub">DANE 2025 · ECV (+0,7%/año)</div>
+    </div>
+
+    <div class="card">
+      <div class="card-label"><span>INTERESES PAGADOS · 2026</span><span class="badge alert">+12% TES</span></div>
+      <div class="card-value large red" id="intereses">$0</div>
+      <div class="card-sub">Acumulado año en curso · Total anual estimado: $86.000.000 M (4,6% PIB)</div>
+    </div>
+  </div>
+
+  <!-- INDICADORES MACRO -->
+  <div class="section-title">Indicadores macroeconómicos</div>
+  <div class="grid">
+    <div class="card">
+      <div class="card-label"><span>TASA BANREP</span><span class="badge alert">+200 PB 2026</span></div>
+      <div class="card-value"><span id="tasaBanrep">11,25%</span><span class="card-unit">/ política monetaria</span></div>
+      <div class="card-sub">Subida ene+mar 2026 · Mantenida unánime abril y mayo</div>
+    </div>
+
+    <div class="card">
+      <div class="card-label"><span>INFLACIÓN ANUAL</span></div>
+      <div class="card-value"><span id="inflacion">5,5%</span><span class="card-unit">/ proy. 2026: <span id="inflacionProy">6,3</span>%</span></div>
+      <div class="card-sub">Meta Banrep: 3% (±1) · No cumplida desde 2021</div>
+    </div>
+
+    <div class="card" id="cardTRM">
+      <div class="card-label">
+        <span>TRM · DÓLAR</span>
+        <span class="badge" id="trmBadge">CARGANDO...</span>
+      </div>
+      <div class="card-value yellow">
+        <span id="trmValue">$3.644,47</span>
+        <span class="card-unit">COP / USD</span>
+      </div>
+      <div class="card-sub" id="trmSub">
+        Promedio ponderado de operaciones del día anterior · Fuente: <a href="https://www.datos.gov.co/resource/32sa-8pi3.json" target="_blank" style="color:var(--col-yellow)">datos.gov.co</a>
+        <br><span id="trmFecha" style="color:var(--text-faint);font-size:11px">Vigencia: cargando...</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label"><span>BONO 10 AÑOS</span><span class="badge alert">TOP 6 MUNDO</span></div>
+      <div class="card-value red"><span id="bono10y">12,0%</span><span class="card-unit">/ rendimiento</span></div>
+      <div class="card-sub">Subió 4,3 pp en una década · Costo de financiación récord</div>
+    </div>
+
+    <div class="card">
+      <div class="card-label"><span>DÉFICIT FISCAL 2025</span></div>
+      <div class="card-value red"><span id="deficit">6,3%</span><span class="card-unit">/ del PIB</span></div>
+      <div class="card-sub">2do más alto del siglo sin contar pandemia · Regla fiscal suspendida</div>
+    </div>
+
+    <div class="card">
+      <div class="card-label"><span>DEUDA EXTERNA TOTAL</span></div>
+      <div class="card-value">USD <span id="deudaExternaTotal">246.801</span><span class="card-unit">millones</span></div>
+      <div class="card-sub">Pública + privada · Banrep, dic 2025</div>
+    </div>
+  </div>
+
+  <!-- CALIFICACIÓN CREDITICIA -->
+  <div class="section-title">Calificación soberana</div>
+  <div class="rating">
+    <div class="rating-item">
+      <div class="rating-agency">S&P</div>
+      <div class="rating-grade" id="spGrade">BB-</div>
+      <div class="rating-outlook" id="spOutlook">Estable · No grado inv.</div>
+    </div>
+    <div class="rating-item">
+      <div class="rating-agency">Moody's</div>
+      <div class="rating-grade" id="moodysGrade">Baa3</div>
+      <div class="rating-outlook" id="moodysOutlook">Estable · Grado inv. (límite)</div>
+    </div>
+    <div class="rating-item">
+      <div class="rating-agency">Fitch</div>
+      <div class="rating-grade" id="fitchGrade">BB</div>
+      <div class="rating-outlook" id="fitchOutlook">Estable · No grado inv.</div>
+    </div>
+  </div>
+
+  <!-- CONTEXTO HISTÓRICO -->
+  <div class="section-title">Crecimiento bajo el gobierno actual</div>
+  <div class="grid">
+    <div class="card">
+      <div class="card-label"><span>DEUDA AGOSTO 2022</span></div>
+      <div class="card-value"><span id="deudaAgo2022">$804.000.000</span><span class="card-unit">M COP</span></div>
+      <div class="card-sub">Inicio del actual periodo de gobierno</div>
+    </div>
+    <div class="card">
+      <div class="card-label"><span>DEUDA Q1-2026</span></div>
+      <div class="card-value yellow"><span id="deudaActualCard">$1.223.500.000</span><span class="card-unit">M COP</span></div>
+      <div class="card-sub">Cierre marzo 2026 · Minhacienda</div>
+    </div>
+    <div class="card">
+      <div class="card-label"><span>INCREMENTO</span><span class="badge alert">RÉCORD</span></div>
+      <div class="card-value red"><span id="incrementoCard">+$419.500.000</span><span class="card-unit">M COP</span></div>
+      <div class="card-sub">+52% en 3,7 años · Mayor salto absoluto histórico</div>
+    </div>
+  </div>
+
+  <!-- DEUDA/PIB POR GOBIERNO · 2001–2026 -->
+  <div class="section-title">Evolución de la deuda como % del PIB</div>
+  <div class="chart-card">
+    <div class="chart-header">
+      <div class="chart-title">Deuda bruta del Gobierno Nacional Central · 2001–2026</div>
+      <div class="chart-sub">Saldo de deuda como proporción del PIB nominal, fin de cada año (último dato: Q1-2026). Las bandas verticales marcan los periodos presidenciales. Fuentes: Minhacienda, Banrep, Banco Mundial.</div>
+    </div>
+    <div class="chart-svg-wrap">
+      <svg viewBox="0 0 1200 480" class="chart-svg chart-deuda" id="deudaChart" preserveAspectRatio="xMidYMid meet"></svg>
+      <div class="chart-tooltip" id="deudaTooltip">
+        <div class="tt-year"></div>
+        <div class="tt-value"></div>
+        <div class="tt-pres"></div>
+      </div>
+    </div>
+    <div class="chart-legend">
+      <span>Mínimo histórico · <strong>34% en 2012</strong></span>
+      <span>Pico pandemia · <strong>65% en 2020</strong></span>
+      <span class="alert-text">Nuevo récord · 65,1% en Q1-2026</span>
+    </div>
+  </div>
+
+  <!-- HECTÁREAS DE COCA POR GOBIERNO · UNODC SIMCI -->
+  <div class="section-title">Cultivos de coca por gobierno</div>
+  <div class="chart-card">
+    <div class="chart-header">
+      <div class="chart-title">Hectáreas de coca sembradas · 2001–2024</div>
+      <div class="chart-sub">Censo anual del Sistema Integrado de Monitoreo de Cultivos Ilícitos (UNODC · SIMCI). Las bandas verticales marcan los periodos presidenciales. La línea amarilla traza las hectáreas detectadas cada año.</div>
+    </div>
+    <div class="chart-svg-wrap">
+      <svg viewBox="0 0 1200 480" class="chart-svg" id="cocaChart" preserveAspectRatio="xMidYMid meet"></svg>
+      <div class="chart-tooltip" id="cocaTooltip">
+        <div class="tt-year"></div>
+        <div class="tt-value"></div>
+        <div class="tt-pres"></div>
+      </div>
+    </div>
+    <div class="chart-legend">
+      <span>Récord histórico · <strong>262.000 ha en 2024</strong></span>
+      <span>Mínimo · <strong>48.000 ha en 2012–2013</strong></span>
+      <span class="alert-text">+5,5× desde el mínimo · +28% bajo gobierno actual</span>
+    </div>
+  </div>
+
+  <footer>
+    <h4>Fuentes Oficiales</h4>
+    <div>
+      › Ministerio de Hacienda · <a href="https://www.minhacienda.gov.co/deuda-publica" target="_blank">minhacienda.gov.co/deuda-publica</a><br>
+      › Banco de la República · <a href="https://www.banrep.gov.co/es/estadisticas/deuda-publica" target="_blank">banrep.gov.co/estadisticas/deuda-publica</a><br>
+      › DANE · <a href="https://www.dane.gov.co/" target="_blank">dane.gov.co</a> (PIB, IPC, población, ECV)<br>
+      › Investors Relations Colombia (IRC) · <a href="https://www.irc.gov.co/" target="_blank">irc.gov.co</a><br>
+      › Contraloría General de la República · informes de deuda
+    </div>
+    <div class="disclaimer">
+      <strong style="color:var(--accent-amber)">METODOLOGÍA Y FUENTES POR INDICADOR:</strong><br>
+      › <strong>Unidades:</strong> el contador principal del hero está expresado en <em>pesos colombianos crudos</em> (COP). Composición interna/externa, PIB y sección "crecimiento bajo el gobierno actual" usan <em>millones de pesos</em> (M COP, notación oficial Minhacienda). Equivalencias rápidas: 1.000.000.000 COP = 1.000 M = mil millones · 1.000.000.000.000 COP = 1.000.000 M = un billón.<br>
+      › <strong>TRM:</strong> en vivo desde la API de datos.gov.co (dataset 32sa-8pi3). Es la TRM <em>certificada por la Superintendencia Financiera</em>, calculada con el promedio ponderado de operaciones del día anterior. Se actualiza una vez al día, no es streaming intradía.<br>
+      › <strong>Deuda total, interna y externa:</strong> Ministerio de Hacienda, corte Q1-2026 ($1.223,5 billones · 65,1% PIB). Los contadores se animan a partir de la tasa observada de crecimiento (~$120 billones/año, calibrada con el promedio 2022-2026).<br>
+      › <strong>PIB y población:</strong> PIB nominal derivado de la relación deuda/PIB oficial. Población: ECV DANE 2025 (53,3 millones de habitantes). Tamaño de hogar: 2,9 personas (promedio nacional DANE 2025).<br>
+      › <strong>Tasa Banrep, inflación, bono 10 años, déficit:</strong> valores estáticos al último cierre publicado. Requieren actualización manual al publicarse nuevas cifras.<br>
+      › <strong>Calificación crediticia:</strong> S&P BB- (estable), Moody's Baa3 (estable, último grado de inversión), Fitch BB (estable, rebajado dic-2025).<br><br>
+      <strong style="color:var(--accent-amber)">IMPORTANTE:</strong> los números corren al segundo, pero <em>no son streaming en vivo</em> de las entidades — son proyecciones lineales calibradas con datos oficiales más recientes. Para cifras exactas de la fecha actual consulte directamente las fuentes.
+    </div>
+    <div style="margin-top:16px;text-align:center;color:var(--text-faint)">
+      Construido con datos públicos · No afiliado a entidad gubernamental alguna · v2.1 · modo editorial · hero en COP
+    </div>
+  </footer>
+</div>
+
+<script>
+  // ============= RELOJ DE LA DEUDA · data-driven (Fase 3) =============
+  // Toda la data viene de data.json (actualizado por GitHub Actions).
+  const SEC_YEAR = 365.25 * 24 * 3600;
+
+  // Formato — notación es-CO (punto de miles)
+  const fmtCOP = (n) => '$' + Math.round(n).toLocaleString('es-CO').replace(/,/g, '.');
+  const fmtNum = (n) => Math.round(n).toLocaleString('es-CO').replace(/,/g, '.');
+  const fmtPct = (n) => n.toFixed(2).replace('.', ',') + '%';
+  const fmtMillones = (n) => Math.round(n / 1e6).toLocaleString('es-CO').replace(/,/g, '.');
+  const fmtBillones = (n) => (n / 1e12).toLocaleString('es-CO', {minimumFractionDigits: 1, maximumFractionDigits: 1}) + ' billones';
+  const setText = (id, txt) => { const el = document.getElementById(id); if (el) el.textContent = txt; };
+
+  // Estado global (poblado por init desde data.json)
+  let D = null, BASE = null, RATE = null, PER_SEC = null;
+  let cocaData = [], deudaData = [], gobiernos = [];
+  const tints = {
+    tA: 'rgba(252, 209, 22, 0.05)',   // amarillo bandera muy sutil
+    tB: 'rgba(0, 56, 147, 0.20)',     // azul bandera
+    tP: 'rgba(206, 17, 38, 0.18)'     // rojo bandera (resalta gobierno actual)
+  };
+
+  // ============= ARRANQUE: cargar data.json =============
+  fetch('data.json', { cache: 'no-store' })
+    .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+    .then(init)
+    .catch(err => {
+      console.error('No se pudo cargar data.json:', err);
+      setText('deudaBig', 'ERROR DE DATOS');
+      setText('deudaExacta', 'No se pudo cargar data.json — abrir vía servidor web, no con file://');
+    });
+
+  function init(data) {
+    D = data;
+    BASE = {
+      fecha: new Date(D.deuda.fecha_corte + 'T23:59:59-05:00'),
+      deudaTotal: D.deuda.total_cop,
+      deudaInterna: D.deuda.interna_cop,
+      deudaExterna: D.deuda.externa_cop,
+      pib: D.macro.pib_cop,
+      poblacion: D.macro.poblacion,
+      hogarPromedio: D.macro.hogar_promedio,
+      interesesAnuales: D.macro.intereses_anuales_cop,
+      trm: D.macro.trm_fallback,
+      trmFecha: D.macro.trm_fecha_fallback
+    };
+    RATE = {
+      deudaTotal: D.tasas_crecimiento_anual.deuda_total_cop,
+      deudaInterna: D.tasas_crecimiento_anual.deuda_interna_cop,
+      deudaExterna: D.tasas_crecimiento_anual.deuda_externa_cop,
+      pib: D.tasas_crecimiento_anual.pib_cop,
+      poblacion: D.tasas_crecimiento_anual.poblacion
+    };
+    PER_SEC = {
+      deudaTotal: RATE.deudaTotal / SEC_YEAR,
+      deudaInterna: RATE.deudaInterna / SEC_YEAR,
+      deudaExterna: RATE.deudaExterna / SEC_YEAR,
+      pib: RATE.pib / SEC_YEAR,
+      poblacion: RATE.poblacion / SEC_YEAR
+    };
+    cocaData = D.serie_coca.datos;
+    deudaData = D.serie_deuda_pib.datos;
+    gobiernos = D.gobiernos;
+
+    rellenarEstaticos();
+    actualizar();
+    setInterval(actualizar, 100);
+    cargarTRM();
+    buildDeudaChart();
+    buildCocaChart();
+  }
+
+  // ============= VALORES ESTÁTICOS (cambian poco; desde data.json) =============
+  function rellenarEstaticos() {
+    const fechaBase = new Date(D.meta.ultima_actualizacion_oficial + 'T12:00:00-05:00');
+    setText('baseFecha', fechaBase.toLocaleDateString('es-CO', {day:'2-digit', month:'short', year:'numeric'}).toUpperCase());
+
+    const pInt = Math.round(D.deuda.interna_cop / D.deuda.total_cop * 100);
+    setText('compRatio', pInt + '/' + (100 - pInt));
+
+    setText('tasaBanrep', D.macro.tasa_banrep_pct.toFixed(2).replace('.', ',') + '%');
+    setText('inflacion', D.macro.inflacion_anual_pct.toFixed(1).replace('.', ',') + '%');
+    setText('inflacionProy', D.macro.inflacion_proy_2026_pct.toFixed(1).replace('.', ','));
+    setText('bono10y', D.macro.bono_10y_pct.toFixed(1).replace('.', ',') + '%');
+    setText('deficit', D.macro.deficit_fiscal_2025_pct.toFixed(1).replace('.', ',') + '%');
+    setText('deudaExternaTotal', fmtNum(D.macro.deuda_externa_total_usd / 1e6));
+
+    setText('spGrade', D.calificaciones.sp.grado);
+    setText('spOutlook', D.calificaciones.sp.outlook);
+    setText('moodysGrade', D.calificaciones.moodys.grado);
+    setText('moodysOutlook', D.calificaciones.moodys.outlook);
+    setText('fitchGrade', D.calificaciones.fitch.grado);
+    setText('fitchOutlook', D.calificaciones.fitch.outlook);
+
+    setText('deudaAgo2022', '$' + fmtMillones(D.contexto_gobierno.deuda_ago_2022_cop));
+    setText('deudaActualCard', '$' + fmtMillones(D.contexto_gobierno.deuda_actual_cop));
+    setText('incrementoCard', '+$' + fmtMillones(D.contexto_gobierno.incremento_cop));
+  }
+
+  // ============= CONTADORES EN VIVO =============
+  function actualizar() {
+    if (!BASE) return;
+    const ahora = new Date();
+    const segs = (ahora - BASE.fecha) / 1000;
+    const deudaTotal = BASE.deudaTotal + PER_SEC.deudaTotal * segs;
+    const deudaInterna = BASE.deudaInterna + PER_SEC.deudaInterna * segs;
+    const deudaExterna = BASE.deudaExterna + PER_SEC.deudaExterna * segs;
+    const pib = BASE.pib + PER_SEC.pib * segs;
+    const poblacion = BASE.poblacion + PER_SEC.poblacion * segs;
+    const deudaPIB = (deudaTotal / pib) * 100;
+    const deudaPerCapita = deudaTotal / poblacion;
+    const deudaPorFamilia = deudaPerCapita * BASE.hogarPromedio;
+    const inicioAno = new Date(ahora.getFullYear(), 0, 1);
+    const interesesPagados = (BASE.interesesAnuales / SEC_YEAR) * ((ahora - inicioAno) / 1000);
+
+    setText('deudaBig', fmtCOP(deudaTotal));
+    setText('deudaExacta', fmtBillones(deudaTotal));
+    setText('deudaUSD', fmtNum(deudaTotal / BASE.trm / 1e6));
+    setText('deudaInterna', fmtMillones(deudaInterna));
+    setText('deudaExterna', fmtMillones(deudaExterna));
+    setText('deudaExternaUSD', fmtNum(deudaExterna / BASE.trm / 1e6));
+    setText('deudaPIB', fmtPct(deudaPIB));
+    setText('deudaPerCapita', fmtCOP(deudaPerCapita));
+    setText('deudaPorFamilia', fmtCOP(deudaPorFamilia));
+    setText('pib', '$' + fmtMillones(pib));
+    setText('poblacion', fmtNum(poblacion));
+    setText('intereses', fmtCOP(interesesPagados));
+    setText('rateSeg', fmtNum(PER_SEC.deudaTotal));
+    setText('rateMin', fmtNum(PER_SEC.deudaTotal * 60));
+    setText('rateDia', fmtNum(PER_SEC.deudaTotal * 86400 / 1e6));
+    setText('fecha', ahora.toLocaleDateString('es-CO', { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase());
+    setText('hora', ahora.toLocaleTimeString('es-CO', { hour12: false }));
+  }
+
+  // ============= TRM EN VIVO desde datos.gov.co =============
+  async function cargarTRM() {
+    const badge = document.getElementById('trmBadge');
+    const valueEl = document.getElementById('trmValue');
+    const fechaEl = document.getElementById('trmFecha');
+    const url = 'https://www.datos.gov.co/resource/32sa-8pi3.json?$limit=1&$order=vigenciahasta%20DESC';
+
+    try {
+      badge.textContent = 'CONSULTANDO...';
+      const res = await fetch(url);
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+      if (!data || !data[0]) throw new Error('Sin datos');
+
+      const reg = data[0];
+      const trm = parseFloat(reg.valor);
+      const desde = new Date(reg.vigenciadesde);
+      const hasta = new Date(reg.vigenciahasta);
+
+      BASE.trm = trm;
+      valueEl.textContent = '$' + trm.toLocaleString('es-CO', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+      const fmtFecha = (d) => d.toLocaleDateString('es-CO', { day: '2-digit', month: '2-digit', year: 'numeric' });
+      fechaEl.textContent = `Vigencia: ${fmtFecha(desde)} → ${fmtFecha(hasta)} · datos.gov.co`;
+      badge.textContent = 'OFICIAL';
+      badge.className = 'badge good';
+    } catch (err) {
+      console.warn('No se pudo cargar TRM en vivo:', err);
+      badge.textContent = 'OFFLINE';
+      fechaEl.textContent = `Último valor conocido: ${BASE.trmFecha} · API no disponible (CORS o red)`;
+    }
+  }
+
+  // ============= GRÁFICAS · SVG vanilla =============
+  // cocaData, deudaData, gobiernos y tints se pueblan en init() desde data.json.
+
+  // Asigna presidente a un año concreto (datos anuales = cierre de año)
+  function gobiernoDeAno(year) {
+    // Para datos anuales (cierre de año), el gobierno "dueño" del dato es el que estuvo más tiempo
+    if (year <= 2001) return gobiernos[0]; // Pastrana
+    if (year === 2002) return gobiernos[1]; // Uribe I (asumió ago)
+    if (year >= 2003 && year <= 2006) return gobiernos[1];
+    if (year >= 2007 && year <= 2010) return gobiernos[2]; // Uribe II
+    if (year >= 2011 && year <= 2014) return gobiernos[3]; // Santos I
+    if (year >= 2015 && year <= 2018) return gobiernos[4]; // Santos II
+    if (year >= 2019 && year <= 2022) return gobiernos[5]; // Duque
+    return gobiernos[6]; // Petro
+  }
+
+  function buildCocaChart() {
+    const svg = document.getElementById('cocaChart');
+    if (!svg) return;
+
+    const W = 1200, H = 480;
+    const M = { top: 60, right: 30, bottom: 50, left: 60 };
+    const innerW = W - M.left - M.right;
+    const innerH = H - M.top - M.bottom;
+
+    const xMin = 2001, xMax = Math.max(...cocaData.map(d => d[0])) + 1;
+    const xScale = (y) => M.left + ((y - xMin) / (xMax - xMin)) * innerW;
+
+    const peak = cocaData.reduce((a, b) => b[1] > a[1] ? b : a);
+    const yMin = 0, yMax = 280000;
+    const yScale = (h) => M.top + innerH - ((h - yMin) / (yMax - yMin)) * innerH;
+
+    let s = '';
+
+    // 1. Bandas presidenciales + labels (Petro hasta xMax para cubrir último dato)
+    gobiernos.forEach((g, i) => {
+      const endVisual = (g.name === 'PETRO') ? xMax : g.end;
+      const x1 = xScale(g.start);
+      const x2 = xScale(endVisual);
+      s += `<rect x="${x1.toFixed(1)}" y="${M.top}" width="${(x2 - x1).toFixed(1)}" height="${innerH}" fill="${tints[g.tint]}"/>`;
+      s += `<text class="gov-band-label" x="${((x1 + x2) / 2).toFixed(1)}" y="${M.top - 22}" text-anchor="middle">${g.name}</text>`;
+      // Líneas divisorias entre gobiernos
+      if (i > 0) {
+        s += `<line class="gov-divider" x1="${x1.toFixed(1)}" y1="${M.top - 12}" x2="${x1.toFixed(1)}" y2="${M.top + innerH}"/>`;
+      }
+    });
+
+    // 2. Grid horizontal + labels eje Y
+    for (let h = 0; h <= 250000; h += 50000) {
+      const y = yScale(h);
+      s += `<line class="grid-line" x1="${M.left}" y1="${y.toFixed(1)}" x2="${(W - M.right).toFixed(1)}" y2="${y.toFixed(1)}"/>`;
+      s += `<text class="axis-tick" x="${M.left - 10}" y="${(y + 3).toFixed(1)}" text-anchor="end">${h/1000}K</text>`;
+    }
+
+    // 3. Línea horizontal de récord (en el máximo histórico)
+    const yRecord = yScale(peak[1]);
+    s += `<line class="record-line" x1="${M.left}" y1="${yRecord.toFixed(1)}" x2="${(W - M.right).toFixed(1)}" y2="${yRecord.toFixed(1)}"/>`;
+    s += `<text class="record-label" x="${M.left + 8}" y="${(yRecord - 6).toFixed(1)}">RÉCORD HISTÓRICO</text>`;
+
+    // 4. Eje X — años cada 2 + último año
+    const ultimoCoca = xMax - 1;
+    for (let y = 2001; y <= ultimoCoca; y += 2) {
+      const x = xScale(y);
+      s += `<text class="axis-tick" x="${x.toFixed(1)}" y="${(M.top + innerH + 22).toFixed(1)}" text-anchor="middle">${y}</text>`;
+    }
+    if ((ultimoCoca - 2001) % 2 !== 0) {
+      const x = xScale(ultimoCoca);
+      s += `<text class="axis-tick" x="${x.toFixed(1)}" y="${(M.top + innerH + 22).toFixed(1)}" text-anchor="middle">${ultimoCoca}</text>`;
+    }
+
+    // 5. Path de la línea
+    const pathD = cocaData.map((d, i) => {
+      const x = xScale(d[0]);
+      const y = yScale(d[1]);
+      return `${i === 0 ? 'M' : 'L'} ${x.toFixed(1)} ${y.toFixed(1)}`;
+    }).join(' ');
+    s += `<path class="data-line" d="${pathD}"/>`;
+
+    // 6. Markers en cada año
+    cocaData.forEach(d => {
+      const x = xScale(d[0]);
+      const y = yScale(d[1]);
+      s += `<circle class="data-point" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="4" data-year="${d[0]}" data-ha="${d[1]}"/>`;
+    });
+
+    // 7. Anotación numérica sobre el récord
+    const xPeak = xScale(peak[0]);
+    const yPeak = yScale(peak[1]);
+    s += `<text class="peak-label" x="${(xPeak - 10).toFixed(1)}" y="${(yPeak - 10).toFixed(1)}" text-anchor="end">${Math.round(peak[1]/1000)}K</text>`;
+
+    // 8. Anotación valle 2012-2013
+    const xValley = xScale(2012.5);
+    const yValley = yScale(48000);
+    s += `<text class="axis-tick" x="${xValley.toFixed(1)}" y="${(yValley + 20).toFixed(1)}" text-anchor="middle" fill="#7a7a7a">MÍNIMO 48K</text>`;
+
+    svg.innerHTML = s;
+
+    // Tooltips
+    const tooltip = document.getElementById('cocaTooltip');
+    const wrap = svg.closest('.chart-svg-wrap');
+
+    svg.querySelectorAll('.data-point').forEach(pt => {
+      pt.addEventListener('mouseenter', () => {
+        const year = +pt.dataset.year;
+        const ha = +pt.dataset.ha;
+        const gov = gobiernoDeAno(year);
+
+        tooltip.querySelector('.tt-year').textContent = year;
+        tooltip.querySelector('.tt-value').textContent = ha.toLocaleString('es-CO').replace(/,/g, '.') + ' ha';
+        tooltip.querySelector('.tt-pres').textContent = gov ? gov.name : '';
+
+        const svgRect = svg.getBoundingClientRect();
+        const wrapRect = wrap.getBoundingClientRect();
+        const scaleX = svgRect.width / W;
+        const scaleY = svgRect.height / H;
+        const ptX = +pt.getAttribute('cx') * scaleX + (svgRect.left - wrapRect.left);
+        const ptY = +pt.getAttribute('cy') * scaleY + (svgRect.top - wrapRect.top);
+        tooltip.style.left = ptX + 'px';
+        tooltip.style.top = ptY + 'px';
+        tooltip.classList.add('visible');
+      });
+      pt.addEventListener('mouseleave', () => {
+        tooltip.classList.remove('visible');
+      });
+    });
+  }
+
+  function buildDeudaChart() {
+    const svg = document.getElementById('deudaChart');
+    if (!svg) return;
+
+    const W = 1200, H = 480;
+    const M = { top: 60, right: 30, bottom: 50, left: 60 };
+    const innerW = W - M.left - M.right;
+    const innerH = H - M.top - M.bottom;
+
+    const xMin = 2001, xMax = 2027;
+    const xScale = (y) => M.left + ((y - xMin) / (xMax - xMin)) * innerW;
+
+    const yMin = 30, yMax = 70;
+    const yScale = (h) => M.top + innerH - ((h - yMin) / (yMax - yMin)) * innerH;
+
+    let s = '';
+
+    // 1. Bandas presidenciales (reutilizamos `gobiernos` global; extendemos Petro hasta 2027 visual)
+    gobiernos.forEach((g, i) => {
+      const endVisual = (g.name === 'PETRO') ? 2027 : g.end;
+      const x1 = xScale(g.start);
+      const x2 = xScale(endVisual);
+      s += `<rect x="${x1.toFixed(1)}" y="${M.top}" width="${(x2 - x1).toFixed(1)}" height="${innerH}" fill="${tints[g.tint]}"/>`;
+      s += `<text class="gov-band-label" x="${((x1 + x2) / 2).toFixed(1)}" y="${M.top - 22}" text-anchor="middle">${g.name}</text>`;
+      if (i > 0) {
+        s += `<line class="gov-divider" x1="${x1.toFixed(1)}" y1="${M.top - 12}" x2="${x1.toFixed(1)}" y2="${M.top + innerH}"/>`;
+      }
+    });
+
+    // 2. Grid horizontal + labels eje Y (cada 10 pp)
+    for (let p = 30; p <= 70; p += 10) {
+      const y = yScale(p);
+      s += `<line class="grid-line" x1="${M.left}" y1="${y.toFixed(1)}" x2="${(W - M.right).toFixed(1)}" y2="${y.toFixed(1)}"/>`;
+      s += `<text class="axis-tick" x="${M.left - 10}" y="${(y + 3).toFixed(1)}" text-anchor="end">${p}%</text>`;
+    }
+
+    // 3. Línea horizontal de récord histórico anterior (65% pandemia 2020)
+    const yPandemia = yScale(65);
+    s += `<line class="record-line" x1="${M.left}" y1="${yPandemia.toFixed(1)}" x2="${(W - M.right).toFixed(1)}" y2="${yPandemia.toFixed(1)}"/>`;
+    s += `<text class="record-label" x="${M.left + 8}" y="${(yPandemia - 6).toFixed(1)}">PICO PANDEMIA 65%</text>`;
+
+    // 4. Eje X — años cada 3
+    for (let y = 2001; y <= 2026; y += 3) {
+      const x = xScale(y);
+      s += `<text class="axis-tick" x="${x.toFixed(1)}" y="${(M.top + innerH + 22).toFixed(1)}" text-anchor="middle">${y}</text>`;
+    }
+
+    // 5. Path de la línea
+    const pathD = deudaData.map((d, i) => {
+      const x = xScale(d[0]);
+      const y = yScale(d[1]);
+      return `${i === 0 ? 'M' : 'L'} ${x.toFixed(1)} ${y.toFixed(1)}`;
+    }).join(' ');
+    s += `<path class="data-line" d="${pathD}"/>`;
+
+    // 6. Markers en cada año
+    deudaData.forEach(d => {
+      const x = xScale(d[0]);
+      const y = yScale(d[1]);
+      s += `<circle class="data-point" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="4" data-year="${d[0]}" data-val="${d[1]}"/>`;
+    });
+
+    // 7. Anotación punto récord Q1-2026
+    const xPeak = xScale(2026);
+    const yPeak = yScale(65.1);
+    s += `<text class="peak-label" x="${(xPeak - 10).toFixed(1)}" y="${(yPeak - 10).toFixed(1)}" text-anchor="end">65,1%</text>`;
+
+    // 8. Anotación valle 2012
+    const xValley = xScale(2012);
+    const yValley = yScale(34);
+    s += `<text class="axis-tick" x="${xValley.toFixed(1)}" y="${(yValley + 20).toFixed(1)}" text-anchor="middle" fill="#7a7a7a">MÍNIMO 34%</text>`;
+
+    svg.innerHTML = s;
+
+    // Tooltips
+    const tooltip = document.getElementById('deudaTooltip');
+    const wrap = svg.closest('.chart-svg-wrap');
+
+    svg.querySelectorAll('.data-point').forEach(pt => {
+      pt.addEventListener('mouseenter', () => {
+        const year = +pt.dataset.year;
+        const val = +pt.dataset.val;
+        const gov = gobiernoDeAno(year);
+
+        tooltip.querySelector('.tt-year').textContent = year + (year === 2026 ? ' · Q1' : '');
+        tooltip.querySelector('.tt-value').textContent = val.toFixed(1).replace('.', ',') + '% del PIB';
+        tooltip.querySelector('.tt-pres').textContent = gov ? gov.name : '';
+
+        const svgRect = svg.getBoundingClientRect();
+        const wrapRect = wrap.getBoundingClientRect();
+        const scaleX = svgRect.width / W;
+        const scaleY = svgRect.height / H;
+        const ptX = +pt.getAttribute('cx') * scaleX + (svgRect.left - wrapRect.left);
+        const ptY = +pt.getAttribute('cy') * scaleY + (svgRect.top - wrapRect.top);
+        tooltip.style.left = ptX + 'px';
+        tooltip.style.top = ptY + 'px';
+        tooltip.classList.add('visible');
+      });
+      pt.addEventListener('mouseleave', () => {
+        tooltip.classList.remove('visible');
+      });
+    });
+  }
+
+  window.addEventListener('resize', () => {
+    // Los SVG escalan con viewBox; solo cerramos tooltips para evitar posiciones obsoletas.
+    document.getElementById('cocaTooltip').classList.remove('visible');
+    document.getElementById('deudaTooltip').classList.remove('visible');
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,36 @@
+name: Actualizar datos del reloj
+
+# CUÁNDO se ejecuta el robot:
+on:
+  schedule:
+    - cron: "0 10 * * *"   # todos los días a las 10:00 UTC = 5:00 a.m. en Colombia
+  workflow_dispatch: {}     # además, un botón para correrlo a mano cuando quieras
+
+jobs:
+  actualizar:
+    runs-on: ubuntu-latest          # el robot corre en un computador de GitHub (no en tu Mac)
+    permissions:
+      contents: write               # permiso para guardar (commitear) el data.json actualizado
+    steps:
+      - name: Bajar el código del repo
+        uses: actions/checkout@v4
+
+      - name: Preparar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Actualizar la TRM
+        run: python scripts/actualizar_trm.py
+
+      - name: Guardar el cambio (solo si la cifra cambió)
+        run: |
+          if [[ -n "$(git status --porcelain data.json)" ]]; then
+            git config user.name "reloj-bot"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add data.json
+            git commit -m "auto: TRM actualizada $(date -u +%Y-%m-%d)"
+            git push
+          else
+            echo "Sin cambios en data.json — la TRM ya estaba al día."
+          fi
