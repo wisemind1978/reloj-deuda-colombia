@@ -1,7 +1,7 @@
 {
   "meta": {
     "ultima_actualizacion_oficial": "2026-03-31",
-    "ultima_corrida_script": "2026-05-28T17:03:44-05:00",
+    "ultima_corrida_script": "2026-05-28T17:54:23-05:00",
     "fuente_deuda": "Ministerio de Hacienda · boletín deuda Q1-2026",
     "nota": "Cifras en pesos colombianos (COP). Series y bases provienen de fuentes oficiales; ver campo 'fuente' por sección."
   },
@@ -32,8 +32,8 @@
     "bono_10y_pct": 12.0,
     "deficit_fiscal_2025_pct": 6.3,
     "deuda_externa_total_usd": 246801000000,
-    "trm_fallback": 3631.57,
-    "trm_fecha_fallback": "28/05/2026"
+    "trm_fallback": 3646.58,
+    "trm_fecha_fallback": "29/05/2026"
   },
   "calificaciones": {
     "sp": {
