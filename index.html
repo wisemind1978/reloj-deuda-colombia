@@ -661,8 +661,8 @@
       <span class="badge alert" id="compRatio">71/29</span>
     </div>
     <div class="comp-bar">
-      <div class="comp-segment comp-interna" style="width:71.2%">71,2%</div>
-      <div class="comp-segment comp-externa" style="width:28.8%">28,8%</div>
+      <div class="comp-segment comp-interna" id="compSegInterna" style="width:71.2%">71,2%</div>
+      <div class="comp-segment comp-externa" id="compSegExterna" style="width:28.8%">28,8%</div>
     </div>
     <div class="comp-legend">
       <div class="comp-legend-item"><span class="comp-dot" style="background:var(--col-yellow)"></span>INTERNA · $<span id="deudaInterna">870.900.000</span> M COP (TES y otros)</div>
@@ -944,8 +944,18 @@
     const fechaBase = new Date(D.meta.ultima_actualizacion_oficial + 'T12:00:00-05:00');
     setText('baseFecha', fechaBase.toLocaleDateString('es-CO', {day:'2-digit', month:'short', year:'numeric'}).toUpperCase());
 
-    const pInt = Math.round(D.deuda.interna_cop / D.deuda.total_cop * 100);
+    const pIntExacto = D.deuda.interna_cop / D.deuda.total_cop * 100;
+    const pInt = Math.round(pIntExacto);
     setText('compRatio', pInt + '/' + (100 - pInt));
+    // Barra de composición: ancho + etiqueta dinámicos según los datos reales
+    const segI = document.getElementById('compSegInterna');
+    const segE = document.getElementById('compSegExterna');
+    if (segI && segE) {
+      segI.style.width = pIntExacto.toFixed(1) + '%';
+      segE.style.width = (100 - pIntExacto).toFixed(1) + '%';
+      segI.textContent = pIntExacto.toFixed(1).replace('.', ',') + '%';
+      segE.textContent = (100 - pIntExacto).toFixed(1).replace('.', ',') + '%';
+    }
 
     setText('tasaBanrep', D.macro.tasa_banrep_pct.toFixed(2).replace('.', ',') + '%');
     setText('inflacion', D.macro.inflacion_anual_pct.toFixed(1).replace('.', ',') + '%');

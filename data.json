@@ -1,16 +1,16 @@
 {
   "meta": {
-    "ultima_actualizacion_oficial": "2026-03-31",
-    "ultima_corrida_script": "2026-05-28T17:54:23-05:00",
-    "fuente_deuda": "Ministerio de Hacienda · boletín deuda Q1-2026",
+    "ultima_actualizacion_oficial": "2026-04-30",
+    "ultima_corrida_script": "2026-05-28T19:14:03-05:00",
+    "fuente_deuda": "IRC · Perfil Deuda Bruta GNC, corte 2026-04-30",
     "nota": "Cifras en pesos colombianos (COP). Series y bases provienen de fuentes oficiales; ver campo 'fuente' por sección."
   },
   "deuda": {
-    "total_cop": 1223500000000000,
-    "interna_cop": 870900000000000,
-    "externa_cop": 352600000000000,
-    "fecha_corte": "2026-03-31",
-    "fuente": "Minhacienda GNC bruta Q1-2026"
+    "total_cop": 1181449357686726,
+    "interna_cop": 867253222378795,
+    "externa_cop": 314196135307932,
+    "fecha_corte": "2026-04-30",
+    "fuente": "IRC/Minhacienda · Perfil Deuda Bruta GNC abril 2026"
   },
   "tasas_crecimiento_anual": {
     "deuda_total_cop": 120000000000000,
@@ -25,15 +25,15 @@
     "poblacion": 53300000,
     "hogar_promedio": 2.9,
     "intereses_anuales_cop": 86000000000000,
-    "deuda_pib_pct": 65.1,
+    "deuda_pib_pct": 61.2,
     "tasa_banrep_pct": 11.25,
     "inflacion_anual_pct": 5.5,
     "inflacion_proy_2026_pct": 6.3,
     "bono_10y_pct": 12.0,
     "deficit_fiscal_2025_pct": 6.3,
     "deuda_externa_total_usd": 246801000000,
-    "trm_fallback": 3646.58,
-    "trm_fecha_fallback": "29/05/2026"
+    "trm_fallback": 3631.57,
+    "trm_fecha_fallback": "28/05/2026"
   },
   "calificaciones": {
     "sp": {
@@ -51,9 +51,9 @@
   },
   "contexto_gobierno": {
     "deuda_ago_2022_cop": 804000000000000,
-    "deuda_actual_cop": 1223500000000000,
-    "incremento_cop": 419500000000000,
-    "incremento_pct": 52,
+    "deuda_actual_cop": 1181449357686726,
+    "incremento_cop": 377449357686726,
+    "incremento_pct": 47,
     "periodo": "3,7 años"
   },
   "serie_deuda_pib": {
@@ -85,7 +85,7 @@
       [2023, 56.0],
       [2024, 58.0],
       [2025, 64.5],
-      [2026, 65.1]
+      [2026, 61.2]
     ]
   },
   "serie_coca": {

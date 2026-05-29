@@ -20,17 +20,23 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Actualizar la TRM
+      - name: Instalar dependencias
+        run: pip install xlrd
+
+      - name: Actualizar la TRM (dólar)
         run: python scripts/actualizar_trm.py
 
-      - name: Guardar el cambio (solo si la cifra cambió)
+      - name: Actualizar la deuda (Excel oficial del IRC)
+        run: python scripts/actualizar_deuda.py
+
+      - name: Guardar los cambios (solo si algo cambió)
         run: |
           if [[ -n "$(git status --porcelain data.json)" ]]; then
             git config user.name "reloj-bot"
             git config user.email "github-actions[bot]@users.noreply.github.com"
             git add data.json
-            git commit -m "auto: TRM actualizada $(date -u +%Y-%m-%d)"
+            git commit -m "auto: datos actualizados $(date -u +%Y-%m-%d)"
             git push
           else
-            echo "Sin cambios en data.json — la TRM ya estaba al día."
+            echo "Sin cambios en data.json — todo estaba al día."
           fi
