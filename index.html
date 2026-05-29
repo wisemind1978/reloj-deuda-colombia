@@ -674,7 +674,7 @@
   <div class="grid">
     <div class="card">
       <div class="card-label"><span>DEUDA / PIB</span><span class="badge alert">CRÍTICO</span></div>
-      <div class="card-value large red" id="deudaPIB">65,1%</div>
+      <div class="card-value large red" id="deudaPIB">61,2%</div>
       <div class="card-sub">Récord del siglo XXI excluyendo pandemia (pico 2020: 65%)</div>
     </div>
 
@@ -814,9 +814,9 @@
       </div>
     </div>
     <div class="chart-legend">
-      <span>Mínimo histórico · <strong>34% en 2012</strong></span>
-      <span>Pico pandemia · <strong>65% en 2020</strong></span>
-      <span class="alert-text">Nuevo récord · 65,1% en Q1-2026</span>
+      <span>Mínimo · <strong>32,5% en 2012</strong></span>
+      <span>Pico pandemia · <strong>62,1% en 2020</strong></span>
+      <span class="alert-text">Máximo histórico · 64,5% en 2025 · hoy 61,2%</span>
     </div>
   </div>
 
@@ -855,7 +855,8 @@
       <strong style="color:var(--accent-amber)">METODOLOGÍA Y FUENTES POR INDICADOR:</strong><br>
       › <strong>Unidades:</strong> el contador principal del hero está expresado en <em>pesos colombianos crudos</em> (COP). Composición interna/externa, PIB y sección "crecimiento bajo el gobierno actual" usan <em>millones de pesos</em> (M COP, notación oficial Minhacienda). Equivalencias rápidas: 1.000.000.000 COP = 1.000 M = mil millones · 1.000.000.000.000 COP = 1.000.000 M = un billón.<br>
       › <strong>TRM:</strong> en vivo desde la API de datos.gov.co (dataset 32sa-8pi3). Es la TRM <em>certificada por la Superintendencia Financiera</em>, calculada con el promedio ponderado de operaciones del día anterior. Se actualiza una vez al día, no es streaming intradía.<br>
-      › <strong>Deuda total, interna y externa:</strong> Ministerio de Hacienda, corte Q1-2026 ($1.223,5 billones · 65,1% PIB). Los contadores se animan a partir de la tasa observada de crecimiento (~$120 billones/año, calibrada con el promedio 2022-2026).<br>
+      › <strong>Deuda total, interna y externa:</strong> IRC/Minhacienda · Perfil de Deuda Bruta GNC, corte abril 2026 ($1.181,4 billones · 61,2% PIB). Se actualiza automáticamente cada mes desde el Excel oficial del IRC. Los contadores proyectan al segundo sobre la tasa observada (~$120 billones/año).<br>
+      › <strong>Serie histórica deuda/PIB:</strong> saldos oficiales del IRC ÷ PIB nominal del Banco Mundial (2001-2024). 2025 cierre reportado; 2026 oficial IRC.<br>
       › <strong>PIB y población:</strong> PIB nominal derivado de la relación deuda/PIB oficial. Población: ECV DANE 2025 (53,3 millones de habitantes). Tamaño de hogar: 2,9 personas (promedio nacional DANE 2025).<br>
       › <strong>Tasa Banrep, inflación, bono 10 años, déficit:</strong> valores estáticos al último cierre publicado. Requieren actualización manual al publicarse nuevas cifras.<br>
       › <strong>Calificación crediticia:</strong> S&P BB- (estable), Moody's Baa3 (estable, último grado de inversión), Fitch BB (estable, rebajado dic-2025).<br><br>
@@ -1206,10 +1207,12 @@
       s += `<text class="axis-tick" x="${M.left - 10}" y="${(y + 3).toFixed(1)}" text-anchor="end">${p}%</text>`;
     }
 
-    // 3. Línea horizontal de récord histórico anterior (65% pandemia 2020)
-    const yPandemia = yScale(65);
-    s += `<line class="record-line" x1="${M.left}" y1="${yPandemia.toFixed(1)}" x2="${(W - M.right).toFixed(1)}" y2="${yPandemia.toFixed(1)}"/>`;
-    s += `<text class="record-label" x="${M.left + 8}" y="${(yPandemia - 6).toFixed(1)}">PICO PANDEMIA 65%</text>`;
+    // 3. Línea horizontal de récord histórico (en el máximo de la serie)
+    const peak = deudaData.reduce((a, b) => b[1] > a[1] ? b : a);
+    const valle = deudaData.reduce((a, b) => b[1] < a[1] ? b : a);
+    const yRecord = yScale(peak[1]);
+    s += `<line class="record-line" x1="${M.left}" y1="${yRecord.toFixed(1)}" x2="${(W - M.right).toFixed(1)}" y2="${yRecord.toFixed(1)}"/>`;
+    s += `<text class="record-label" x="${M.left + 8}" y="${(yRecord - 6).toFixed(1)}">RÉCORD HISTÓRICO</text>`;
 
     // 4. Eje X — años cada 3
     for (let y = 2001; y <= 2026; y += 3) {
@@ -1232,15 +1235,15 @@
       s += `<circle class="data-point" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="4" data-year="${d[0]}" data-val="${d[1]}"/>`;
     });
 
-    // 7. Anotación punto récord Q1-2026
-    const xPeak = xScale(2026);
-    const yPeak = yScale(65.1);
-    s += `<text class="peak-label" x="${(xPeak - 10).toFixed(1)}" y="${(yPeak - 10).toFixed(1)}" text-anchor="end">65,1%</text>`;
+    // 7. Anotación punto récord
+    const xPeak = xScale(peak[0]);
+    const yPeak = yScale(peak[1]);
+    s += `<text class="peak-label" x="${(xPeak - 10).toFixed(1)}" y="${(yPeak - 10).toFixed(1)}" text-anchor="end">${peak[1].toFixed(1).replace('.', ',')}%</text>`;
 
-    // 8. Anotación valle 2012
-    const xValley = xScale(2012);
-    const yValley = yScale(34);
-    s += `<text class="axis-tick" x="${xValley.toFixed(1)}" y="${(yValley + 20).toFixed(1)}" text-anchor="middle" fill="#7a7a7a">MÍNIMO 34%</text>`;
+    // 8. Anotación valle (mínimo de la serie)
+    const xValley = xScale(valle[0]);
+    const yValley = yScale(valle[1]);
+    s += `<text class="axis-tick" x="${xValley.toFixed(1)}" y="${(yValley + 20).toFixed(1)}" text-anchor="middle" fill="#7a7a7a">MÍNIMO ${valle[1].toFixed(0)}%</text>`;
 
     svg.innerHTML = s;
 
