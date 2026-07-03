@@ -1,7 +1,7 @@
 {
   "meta": {
     "ultima_actualizacion_oficial": "2026-04-30",
-    "ultima_corrida_script": "2026-07-02T12:03:55+00:00",
+    "ultima_corrida_script": "2026-07-03T12:01:54+00:00",
     "fuente_deuda": "IRC · Perfil Deuda Bruta GNC, corte 2026-04-30",
     "nota": "Cifras en pesos colombianos (COP). Series y bases provienen de fuentes oficiales; ver campo 'fuente' por sección."
   },
@@ -32,8 +32,8 @@
     "bono_10y_pct": 12.0,
     "deficit_fiscal_2025_pct": 6.3,
     "deuda_externa_total_usd": 246801000000,
-    "trm_fallback": 3403.35,
-    "trm_fecha_fallback": "02/07/2026"
+    "trm_fallback": 3357.82,
+    "trm_fecha_fallback": "03/07/2026"
   },
   "calificaciones": {
     "sp": {
