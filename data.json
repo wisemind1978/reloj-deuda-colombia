@@ -1,16 +1,16 @@
 {
   "meta": {
-    "ultima_actualizacion_oficial": "2026-09-30",
-    "ultima_corrida_script": "2026-11-23T21:50:05+00:00",
-    "fuente_deuda": "IRC · Perfil Deuda Bruta GNC, corte 2026-09-30",
+    "ultima_actualizacion_oficial": "2026-10-31",
+    "ultima_corrida_script": "2026-11-24T20:26:27+00:00",
+    "fuente_deuda": "IRC · Perfil Deuda Bruta GNC, corte 2026-10-31",
     "nota": "Cifras en pesos colombianos (COP). Series y bases provienen de fuentes oficiales; ver campo 'fuente' por sección."
   },
   "deuda": {
-    "total_cop": 1185489152381899,
-    "interna_cop": 928299367461398,
-    "externa_cop": 257189784920501,
-    "fecha_corte": "2026-09-30",
-    "fuente": "IRC/Minhacienda · Perfil Deuda Bruta GNC septiembre 2026"
+    "total_cop": 1200238998323650,
+    "interna_cop": 938779653257573,
+    "externa_cop": 261459345066077,
+    "fecha_corte": "2026-10-31",
+    "fuente": "IRC/Minhacienda · Perfil Deuda Bruta GNC octubre 2026"
   },
   "tasas_crecimiento_anual": {
     "deuda_total_cop": 120000000000000,
@@ -25,7 +25,7 @@
     "poblacion": 53300000,
     "hogar_promedio": 2.9,
     "intereses_anuales_cop": 86000000000000,
-    "deuda_pib_pct": 61.4,
+    "deuda_pib_pct": 62.2,
     "tasa_banrep_pct": 11.25,
     "inflacion_anual_pct": 5.5,
     "inflacion_proy_2026_pct": 6.3,
@@ -51,9 +51,9 @@
   },
   "contexto_gobierno": {
     "deuda_ago_2022_cop": 804000000000000,
-    "deuda_actual_cop": 1185489152381899,
-    "incremento_cop": 381489152381899,
-    "incremento_pct": 47,
+    "deuda_actual_cop": 1200238998323650,
+    "incremento_cop": 396238998323650,
+    "incremento_pct": 49,
     "periodo": "3,7 años"
   },
   "serie_deuda_pib": {
@@ -85,7 +85,7 @@
       [2023, 54.6],
       [2024, 59.9],
       [2025, 64.5],
-      [2026, 61.4]
+      [2026, 62.2]
     ]
   },
   "serie_coca": {
