@@ -110,6 +110,14 @@ def main():
     else:
         serie.append([fecha.year, pib_pct])
 
+    # Nota de fuente de la gráfica: reescribir el mes de corte del año en curso
+    fuente_serie = data["serie_deuda_pib"]["fuente"]
+    data["serie_deuda_pib"]["fuente"] = re.sub(
+        r"\d{4}: oficial IRC \(corte [^,]+,",
+        f"{fecha.year}: oficial IRC (corte {MESES[fecha.month - 1]} {fecha.year},",
+        fuente_serie,
+    )
+
     # Guardar manteniendo las series compactas (una línea por par)
     texto = json.dumps(data, ensure_ascii=False, indent=2)
     texto = re.sub(r"\[\s*\n\s*(\d+),\s*\n\s*([\d.]+)\s*\n\s*\]", r"[\1, \2]", texto)

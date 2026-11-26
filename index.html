@@ -624,7 +624,7 @@
       <div class="header-text">
         <div class="eyebrow">
           <span class="live-dot"></span>
-          <span>PROYECCIÓN AL SEGUNDO · BASE Q1-2026</span>
+          <span>PROYECCIÓN AL SEGUNDO · BASE <span id="eyebrowCorte">Q1-2026</span></span>
         </div>
         <h1>RELOJ DE LA DEUDA<br><span class="accent">NACIONAL DE COLOMBIA</span></h1>
         <div class="meta">
@@ -713,9 +713,9 @@
   <div class="section-title">Indicadores macroeconómicos</div>
   <div class="grid">
     <div class="card">
-      <div class="card-label"><span>TASA BANREP</span><span class="badge alert">+200 PB 2026</span></div>
+      <div class="card-label"><span>TASA BANREP</span><span class="badge alert">+300 PB 2026</span></div>
       <div class="card-value"><span id="tasaBanrep">11,25%</span><span class="card-unit">/ política monetaria</span></div>
-      <div class="card-sub">Subida ene+mar 2026 · Mantenida unánime abril y mayo</div>
+      <div class="card-sub">Mantenida en oct-2026 (votación 4-3) · Próxima junta: 18-dic</div>
     </div>
 
     <div class="card">
@@ -787,9 +787,9 @@
       <div class="card-sub">Inicio del actual periodo de gobierno</div>
     </div>
     <div class="card">
-      <div class="card-label"><span>DEUDA Q1-2026</span></div>
+      <div class="card-label"><span>DEUDA <span id="deudaCorteLabel">Q1-2026</span></span></div>
       <div class="card-value yellow"><span id="deudaActualCard">$1.223.500.000</span><span class="card-unit">M COP</span></div>
-      <div class="card-sub">Cierre marzo 2026 · Minhacienda</div>
+      <div class="card-sub"><span id="deudaCorteSub">Cierre marzo 2026</span> · IRC / Minhacienda</div>
     </div>
     <div class="card">
       <div class="card-label"><span>INCREMENTO</span><span class="badge alert">RÉCORD</span></div>
@@ -803,7 +803,7 @@
   <div class="chart-card">
     <div class="chart-header">
       <div class="chart-title">Deuda bruta del Gobierno Nacional Central · 2001–2026</div>
-      <div class="chart-sub">Saldo de deuda como proporción del PIB nominal, fin de cada año (último dato: Q1-2026). Las bandas verticales marcan los periodos presidenciales. Fuentes: Minhacienda, Banrep, Banco Mundial.</div>
+      <div class="chart-sub">Saldo de deuda como proporción del PIB nominal, fin de cada año (último dato: <span id="chartUltimoDato">Q1-2026</span>). Las bandas verticales marcan los periodos presidenciales. Fuentes: Minhacienda, Banrep, Banco Mundial.</div>
     </div>
     <div class="chart-svg-wrap">
       <svg viewBox="0 0 1200 480" class="chart-svg chart-deuda" id="deudaChart" preserveAspectRatio="xMidYMid meet"></svg>
@@ -962,6 +962,15 @@
     setText('inflacion', D.macro.inflacion_anual_pct.toFixed(1).replace('.', ',') + '%');
     setText('inflacionProy', D.macro.inflacion_proy_2026_pct.toFixed(1).replace('.', ','));
     setText('bono10y', D.macro.bono_10y_pct.toFixed(1).replace('.', ',') + '%');
+    // Etiquetas de fecha de corte (se actualizan solas con cada Excel del IRC)
+    const corte = new Date(D.deuda.fecha_corte + 'T12:00:00-05:00');
+    const mesesCorto = ['ENE','FEB','MAR','ABR','MAY','JUN','JUL','AGO','SEP','OCT','NOV','DIC'];
+    const mesesLargo = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+    const corteCorto = mesesCorto[corte.getMonth()] + '-' + corte.getFullYear();
+    setText('eyebrowCorte', corteCorto);
+    setText('deudaCorteLabel', corteCorto);
+    setText('deudaCorteSub', 'Cierre ' + mesesLargo[corte.getMonth()] + ' ' + corte.getFullYear());
+    setText('chartUltimoDato', mesesLargo[corte.getMonth()] + ' ' + corte.getFullYear());
     setText('deficit', D.macro.deficit_fiscal_2025_pct.toFixed(1).replace('.', ',') + '%');
     setText('deudaExternaTotal', fmtNum(D.macro.deuda_externa_total_usd / 1e6));
 

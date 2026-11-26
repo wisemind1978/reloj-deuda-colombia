@@ -26,11 +26,11 @@
     "hogar_promedio": 2.9,
     "intereses_anuales_cop": 86000000000000,
     "deuda_pib_pct": 62.2,
-    "tasa_banrep_pct": 11.25,
-    "inflacion_anual_pct": 5.5,
+    "tasa_banrep_pct": 12.25,
+    "inflacion_anual_pct": 6.3,
     "inflacion_proy_2026_pct": 6.3,
-    "bono_10y_pct": 12.0,
-    "deficit_fiscal_2025_pct": 6.3,
+    "bono_10y_pct": 13.2,
+    "deficit_fiscal_2025_pct": 6.4,
     "deuda_externa_total_usd": 246801000000,
     "trm_fallback": 3592.03,
     "trm_fecha_fallback": "25/11/2026"
@@ -57,7 +57,7 @@
     "periodo": "3,7 años"
   },
   "serie_deuda_pib": {
-    "fuente": "Saldos oficiales IRC/Minhacienda ÷ PIB nominal Banco Mundial (2001-2024, oficial). 2025: cierre reportado. 2026: oficial IRC (corte abril, PIB proyectado).",
+    "fuente": "Saldos oficiales IRC/Minhacienda ÷ PIB nominal Banco Mundial (2001-2024, oficial). 2025: cierre reportado. 2026: oficial IRC (corte octubre 2026, PIB proyectado).",
     "metrica": "deuda bruta GNC como % del PIB nominal",
     "datos": [
       [2001, 38.1],
